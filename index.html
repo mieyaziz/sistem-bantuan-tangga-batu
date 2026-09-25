@@ -569,6 +569,7 @@
 
         <div class="form-group">
           <label for="email">Email</label>
+
           <input
             type="email"
             id="email"
@@ -579,6 +580,7 @@
 
         <div class="form-group">
           <label for="password">Kata Laluan</label>
+
           <input
             type="password"
             id="password"
@@ -616,8 +618,15 @@
     <header class="topbar">
 
       <div class="brand">
-        <h2>Sistem Bantuan Tangga Batu</h2>
-        <small>Database Penerima Bantuan</small>
+
+        <h2>
+          Sistem Bantuan Tangga Batu
+        </h2>
+
+        <small>
+          Database Penerima Bantuan
+        </small>
+
       </div>
 
       <div class="topbar-right">
@@ -646,6 +655,7 @@
       <div class="stats">
 
         <div class="stat-card">
+
           <div class="stat-title">
             Jumlah Penerima
           </div>
@@ -656,10 +666,12 @@
           >
             -
           </div>
+
         </div>
 
 
         <div class="stat-card">
+
           <div class="stat-title">
             Jumlah DUN
           </div>
@@ -670,10 +682,12 @@
           >
             -
           </div>
+
         </div>
 
 
         <div class="stat-card">
+
           <div class="stat-title">
             Jumlah Bangsa
           </div>
@@ -684,10 +698,12 @@
           >
             -
           </div>
+
         </div>
 
 
         <div class="stat-card">
+
           <div class="stat-title">
             Jenis Bantuan
           </div>
@@ -698,6 +714,7 @@
           >
             -
           </div>
+
         </div>
 
       </div>
@@ -720,18 +737,33 @@
           >
 
           <select id="dunFilter">
-            <option value="">Semua DUN</option>
+
+            <option value="">
+              Semua DUN
+            </option>
+
           </select>
+
 
           <select id="bangsaFilter">
-            <option value="">Semua Bangsa</option>
+
+            <option value="">
+              Semua Bangsa
+            </option>
+
           </select>
 
+
           <select id="bantuanFilter">
-            <option value="">Semua Jenis Bantuan</option>
+
+            <option value="">
+              Semua Jenis Bantuan
+            </option>
+
           </select>
 
         </div>
+
 
         <div class="search-actions">
 
@@ -741,6 +773,7 @@
           >
             Cari
           </button>
+
 
           <button
             class="btn btn-secondary"
@@ -773,6 +806,7 @@
 
         </div>
 
+
         <div id="tableContent">
 
           <div class="loading">
@@ -780,6 +814,7 @@
           </div>
 
         </div>
+
 
         <div
           class="pagination"
@@ -820,6 +855,7 @@
 
       </div>
 
+
       <div
         class="detail-list"
         id="detailContent"
@@ -839,8 +875,18 @@
     const SUPABASE_URL =
       'https://xporgbqpfzjxxcmzjyof.supabase.co';
 
+
+    /*
+       PASTE PUBLISHABLE KEY KAU DI SINI.
+
+       CONTOH:
+       sb_publishable_xxxxxxxxxxxxx
+
+       JANGAN GUNA sb_secret_...
+    */
+
     const SUPABASE_PUBLISHABLE_KEY =
-      'sb_publishable_hnAAerngT_5Qmm6fW83V_w_kncToua4';
+      'PASTE_PUBLISHABLE_KEY_HERE';
 
 
     const supabaseClient =
@@ -855,6 +901,7 @@
     ========================================= */
 
     let allData = [];
+
     let filteredData = [];
 
     let currentPage = 1;
@@ -874,7 +921,9 @@
           data: {
             session
           }
-        } = await supabaseClient.auth.getSession();
+        } =
+        await supabaseClient.auth.getSession();
+
 
         if (session) {
 
@@ -919,27 +968,39 @@
 
           event.preventDefault();
 
+
           const email =
             document
               .getElementById('email')
               .value
               .trim();
 
+
           const password =
             document
               .getElementById('password')
               .value;
 
+
           const loginBtn =
-            document.getElementById('loginBtn');
+            document.getElementById(
+              'loginBtn'
+            );
+
 
           const errorBox =
-            document.getElementById('loginError');
+            document.getElementById(
+              'loginError'
+            );
 
 
-          errorBox.style.display = 'none';
+          errorBox.style.display =
+            'none';
 
-          loginBtn.disabled = true;
+
+          loginBtn.disabled =
+            true;
+
 
           loginBtn.textContent =
             'Sedang log masuk...';
@@ -948,9 +1009,13 @@
           const {
             error
           } =
-            await supabaseClient.auth.signInWithPassword({
+          await supabaseClient.auth
+            .signInWithPassword({
+
               email,
+
               password
+
             });
 
 
@@ -959,19 +1024,27 @@
             errorBox.textContent =
               getLoginError(error);
 
+
             errorBox.style.display =
               'block';
 
-            loginBtn.disabled = false;
+
+            loginBtn.disabled =
+              false;
+
 
             loginBtn.textContent =
               'Log Masuk';
 
+
             return;
+
           }
 
 
-          loginBtn.disabled = false;
+          loginBtn.disabled =
+            false;
+
 
           loginBtn.textContent =
             'Log Masuk';
@@ -985,12 +1058,15 @@
       if (
         error.message
           .toLowerCase()
-          .includes('invalid login credentials')
+          .includes(
+            'invalid login credentials'
+          )
       ) {
 
         return 'Email atau kata laluan tidak betul.';
 
       }
+
 
       return error.message;
 
@@ -1005,11 +1081,14 @@
 
       document
         .getElementById('loginPage')
-        .style.display = 'flex';
+        .style.display =
+        'flex';
+
 
       document
         .getElementById('appPage')
-        .style.display = 'none';
+        .style.display =
+        'none';
 
     }
 
@@ -1022,17 +1101,21 @@
 
       document
         .getElementById('loginPage')
-        .style.display = 'none';
+        .style.display =
+        'none';
+
 
       document
         .getElementById('appPage')
-        .style.display = 'block';
+        .style.display =
+        'block';
 
 
       document
         .getElementById('userEmail')
         .textContent =
-        session.user.email || 'Pengguna';
+        session.user.email ||
+        'Pengguna';
 
 
       await loadData();
@@ -1041,7 +1124,14 @@
 
 
     /* =========================================
-       LOAD DATA
+       LOAD ALL DATA
+       SUPABASE LIMIT = 1000 PER REQUEST
+
+       KITA AMBIL SECARA BATCH:
+       0-999
+       1000-1999
+       2000-2999
+       3000-3999
     ========================================= */
 
     async function loadData() {
@@ -1049,52 +1139,125 @@
       document
         .getElementById('tableContent')
         .innerHTML =
-        '<div class="loading">Memuatkan data penerima...</div>';
+        '<div class="loading">Memuatkan semua data penerima...</div>';
 
 
-      const {
-        data,
-        error
-      } =
-      await supabaseClient
-        .from('penerima_bantuan')
-        .select(
-          'id,nama,no_ic,bangsa,alamat,poskod,no_telefon,dun,jenis_bantuan'
-        )
-        .order(
-          'id',
-          {
-            ascending: true
+      allData = [];
+
+
+      const batchSize = 1000;
+
+      let from = 0;
+
+      let finished = false;
+
+
+      try {
+
+        while (!finished) {
+
+          const to =
+            from + batchSize - 1;
+
+
+          const {
+            data,
+            error
+          } =
+          await supabaseClient
+            .from('penerima_bantuan')
+            .select(
+              'id,nama,no_ic,bangsa,alamat,poskod,no_telefon,dun,jenis_bantuan'
+            )
+            .order(
+              'id',
+              {
+                ascending: true
+              }
+            )
+            .range(
+              from,
+              to
+            );
+
+
+          if (error) {
+
+            throw error;
+
           }
+
+
+          if (
+            data &&
+            data.length > 0
+          ) {
+
+            allData =
+              allData.concat(data);
+
+          }
+
+
+          /*
+             Kalau jumlah data yang diterima
+             kurang daripada 1000,
+             bermaksud kita dah sampai penghujung.
+          */
+
+          if (
+            !data ||
+            data.length < batchSize
+          ) {
+
+            finished = true;
+
+          } else {
+
+            from += batchSize;
+
+          }
+
+        }
+
+
+        filteredData =
+          [...allData];
+
+
+        updateStatistics();
+
+        buildFilters();
+
+        renderTable();
+
+
+      } catch (error) {
+
+        console.error(
+          'Load data error:',
+          error
         );
 
-
-      if (error) {
 
         document
           .getElementById('tableContent')
           .innerHTML =
-          `<div class="loading">
-             Gagal memuatkan data.<br><br>
-             ${escapeHtml(error.message)}
-           </div>`;
+          `
+            <div class="loading">
 
-        return;
+              Gagal memuatkan data.
+
+              <br><br>
+
+              ${escapeHtml(
+                error.message
+              )}
+
+            </div>
+          `;
 
       }
-
-
-      allData = data || [];
-
-      filteredData =
-        [...allData];
-
-
-      updateStatistics();
-
-      buildFilters();
-
-      renderTable();
 
     }
 
@@ -1108,21 +1271,29 @@
       const duns =
         new Set(
           allData
-            .map(x => x.dun)
+            .map(
+              x => x.dun
+            )
             .filter(Boolean)
         );
+
 
       const bangsa =
         new Set(
           allData
-            .map(x => x.bangsa)
+            .map(
+              x => x.bangsa
+            )
             .filter(Boolean)
         );
+
 
       const bantuan =
         new Set(
           allData
-            .map(x => x.jenis_bantuan)
+            .map(
+              x => x.jenis_bantuan
+            )
             .filter(Boolean)
         );
 
@@ -1130,7 +1301,10 @@
       document
         .getElementById('totalCount')
         .textContent =
-        allData.length.toLocaleString('ms-MY');
+        allData.length
+          .toLocaleString(
+            'ms-MY'
+          );
 
 
       document
@@ -1161,27 +1335,39 @@
 
       fillSelect(
         'dunFilter',
+
         uniqueValues(
-          allData.map(x => x.dun)
+          allData.map(
+            x => x.dun
+          )
         ),
+
         'Semua DUN'
       );
 
 
       fillSelect(
         'bangsaFilter',
+
         uniqueValues(
-          allData.map(x => x.bangsa)
+          allData.map(
+            x => x.bangsa
+          )
         ),
+
         'Semua Bangsa'
       );
 
 
       fillSelect(
         'bantuanFilter',
+
         uniqueValues(
-          allData.map(x => x.jenis_bantuan)
+          allData.map(
+            x => x.jenis_bantuan
+          )
         ),
+
         'Semua Jenis Bantuan'
       );
 
@@ -1192,12 +1378,25 @@
 
       return [
         ...new Set(
+
           values
-            .map(x => String(x || '').trim())
+
+            .map(
+              x =>
+                String(
+                  x || ''
+                ).trim()
+            )
+
             .filter(Boolean)
+
         )
+
       ].sort(
-        (a, b) =>
+        (
+          a,
+          b
+        ) =>
           a.localeCompare(
             b,
             'ms'
@@ -1218,23 +1417,36 @@
 
 
       select.innerHTML =
-        `<option value="">
-          ${firstOption}
-        </option>`;
+        `
+          <option value="">
+            ${firstOption}
+          </option>
+        `;
 
 
-      values.forEach(value => {
+      values.forEach(
+        value => {
 
-        const option =
-          document.createElement('option');
+          const option =
+            document.createElement(
+              'option'
+            );
 
-        option.value = value;
 
-        option.textContent = value;
+          option.value =
+            value;
 
-        select.appendChild(option);
 
-      });
+          option.textContent =
+            value;
+
+
+          select.appendChild(
+            option
+          );
+
+        }
+      );
 
     }
 
@@ -1247,7 +1459,9 @@
 
       const search =
         document
-          .getElementById('searchInput')
+          .getElementById(
+            'searchInput'
+          )
           .value
           .trim()
           .toLowerCase();
@@ -1255,79 +1469,98 @@
 
       const dun =
         document
-          .getElementById('dunFilter')
+          .getElementById(
+            'dunFilter'
+          )
           .value;
 
 
       const bangsa =
         document
-          .getElementById('bangsaFilter')
+          .getElementById(
+            'bangsaFilter'
+          )
           .value;
 
 
       const bantuan =
         document
-          .getElementById('bantuanFilter')
+          .getElementById(
+            'bantuanFilter'
+          )
           .value;
 
 
       filteredData =
-        allData.filter(item => {
+        allData.filter(
+          item => {
 
-          const searchable = [
+            const searchable = [
 
-            item.nama,
+              item.nama,
 
-            item.no_ic,
+              item.no_ic,
 
-            item.alamat,
+              item.alamat,
 
-            item.no_telefon,
+              item.no_telefon,
 
-            item.poskod,
+              item.poskod,
 
-            item.dun,
+              item.dun,
 
-            item.jenis_bantuan,
+              item.jenis_bantuan,
 
-            item.bangsa
+              item.bangsa
 
-          ]
-          .join(' ')
-          .toLowerCase();
+            ]
 
+              .join(' ')
 
-          const matchSearch =
-            !search ||
-            searchable.includes(search);
+              .toLowerCase();
 
 
-          const matchDun =
-            !dun ||
-            item.dun === dun;
+            const matchSearch =
+              !search ||
+              searchable.includes(
+                search
+              );
 
 
-          const matchBangsa =
-            !bangsa ||
-            item.bangsa === bangsa;
+            const matchDun =
+              !dun ||
+              item.dun === dun;
 
 
-          const matchBantuan =
-            !bantuan ||
-            item.jenis_bantuan === bantuan;
+            const matchBangsa =
+              !bangsa ||
+              item.bangsa === bangsa;
 
 
-          return (
-            matchSearch &&
-            matchDun &&
-            matchBangsa &&
-            matchBantuan
-          );
+            const matchBantuan =
+              !bantuan ||
+              item.jenis_bantuan ===
+                bantuan;
 
-        });
+
+            return (
+
+              matchSearch &&
+
+              matchDun &&
+
+              matchBangsa &&
+
+              matchBantuan
+
+            );
+
+          }
+        );
 
 
       currentPage = 1;
+
 
       renderTable();
 
@@ -1337,29 +1570,43 @@
     function resetFilters() {
 
       document
-        .getElementById('searchInput')
-        .value = '';
+        .getElementById(
+          'searchInput'
+        )
+        .value =
+        '';
 
 
       document
-        .getElementById('dunFilter')
-        .value = '';
+        .getElementById(
+          'dunFilter'
+        )
+        .value =
+        '';
 
 
       document
-        .getElementById('bangsaFilter')
-        .value = '';
+        .getElementById(
+          'bangsaFilter'
+        )
+        .value =
+        '';
 
 
       document
-        .getElementById('bantuanFilter')
-        .value = '';
+        .getElementById(
+          'bantuanFilter'
+        )
+        .value =
+        '';
 
 
       filteredData =
         [...allData];
 
+
       currentPage = 1;
+
 
       renderTable();
 
@@ -1367,12 +1614,17 @@
 
 
     document
-      .getElementById('searchInput')
+      .getElementById(
+        'searchInput'
+      )
       .addEventListener(
         'keydown',
         event => {
 
-          if (event.key === 'Enter') {
+          if (
+            event.key ===
+            'Enter'
+          ) {
 
             applyFilters();
 
@@ -1394,27 +1646,38 @@
 
       const totalPages =
         Math.max(
+
           1,
+
           Math.ceil(
-            total / rowsPerPage
+            total /
+            rowsPerPage
           )
+
         );
 
 
-      if (currentPage > totalPages) {
+      if (
+        currentPage >
+        totalPages
+      ) {
 
-        currentPage = totalPages;
+        currentPage =
+          totalPages;
 
       }
 
 
       const start =
-        (currentPage - 1) *
+        (
+          currentPage - 1
+        ) *
         rowsPerPage;
 
 
       const end =
-        start + rowsPerPage;
+        start +
+        rowsPerPage;
 
 
       const rows =
@@ -1425,21 +1688,35 @@
 
 
       document
-        .getElementById('resultInfo')
+        .getElementById(
+          'resultInfo'
+        )
         .textContent =
-        `${total.toLocaleString('ms-MY')} rekod ditemui`;
+        `${total.toLocaleString(
+          'ms-MY'
+        )} rekod ditemui`;
 
 
-      if (!rows.length) {
+      if (
+        !rows.length
+      ) {
 
         document
-          .getElementById('tableContent')
+          .getElementById(
+            'tableContent'
+          )
           .innerHTML =
-          `<div class="loading">
-             Tiada rekod ditemui.
-           </div>`;
+          `
+            <div class="loading">
+              Tiada rekod ditemui.
+            </div>
+          `;
 
-        renderPagination(0);
+
+        renderPagination(
+          0
+        );
+
 
         return;
 
@@ -1480,10 +1757,15 @@
 
 
       rows.forEach(
-        (item, index) => {
+        (
+          item,
+          index
+        ) => {
 
           const number =
-            start + index + 1;
+            start +
+            index +
+            1;
 
 
           html += `
@@ -1495,25 +1777,42 @@
               </td>
 
               <td>
+
                 <strong>
-                  ${escapeHtml(item.nama || '-')}
+                  ${escapeHtml(
+                    item.nama ||
+                    '-'
+                  )}
                 </strong>
+
               </td>
 
               <td>
-                ${escapeHtml(item.no_ic || '-')}
+                ${escapeHtml(
+                  item.no_ic ||
+                  '-'
+                )}
               </td>
 
               <td>
-                ${escapeHtml(item.bangsa || '-')}
+                ${escapeHtml(
+                  item.bangsa ||
+                  '-'
+                )}
               </td>
 
               <td>
-                ${escapeHtml(item.dun || '-')}
+                ${escapeHtml(
+                  item.dun ||
+                  '-'
+                )}
               </td>
 
               <td>
-                ${escapeHtml(item.jenis_bantuan || '-')}
+                ${escapeHtml(
+                  item.jenis_bantuan ||
+                  '-'
+                )}
               </td>
 
               <td>
@@ -1547,7 +1846,9 @@
 
 
       document
-        .getElementById('tableContent')
+        .getElementById(
+          'tableContent'
+        )
         .innerHTML =
         html;
 
@@ -1573,16 +1874,58 @@
         );
 
 
-      if (!totalPages) {
+      if (
+        !totalPages
+      ) {
 
-        container.innerHTML = '';
+        container.innerHTML =
+          '';
 
         return;
 
       }
 
 
-      let html = '';
+      let html =
+        '';
+
+
+      const maxButtons =
+        7;
+
+
+      let startPage =
+        Math.max(
+          1,
+          currentPage - 3
+        );
+
+
+      let endPage =
+        Math.min(
+          totalPages,
+          startPage +
+          maxButtons -
+          1
+        );
+
+
+      if (
+        endPage -
+        startPage <
+        maxButtons -
+        1
+      ) {
+
+        startPage =
+          Math.max(
+            1,
+            endPage -
+            maxButtons +
+            1
+          );
+
+      }
 
 
       html += `
@@ -1598,45 +1941,24 @@
       `;
 
 
-      const maxButtons = 7;
-
-      let startPage =
-        Math.max(
-          1,
-          currentPage - 3
-        );
-
-      let endPage =
-        Math.min(
-          totalPages,
-          startPage + maxButtons - 1
-        );
-
-
-      if (
-        endPage - startPage <
-        maxButtons - 1
-      ) {
-
-        startPage =
-          Math.max(
-            1,
-            endPage - maxButtons + 1
-          );
-
-      }
-
-
       for (
-        let i = startPage;
-        i <= endPage;
+        let i =
+          startPage;
+
+        i <=
+          endPage;
+
         i++
       ) {
 
         html += `
 
           <button
-            class="page-btn ${i === currentPage ? 'active' : ''}"
+            class="page-btn ${
+              i === currentPage
+                ? 'active'
+                : ''
+            }"
             onclick="changePage(${i})"
           >
             ${i}
@@ -1652,7 +1974,12 @@
         <button
           class="page-btn"
           onclick="changePage(${currentPage + 1})"
-          ${currentPage === totalPages ? 'disabled' : ''}
+          ${
+            currentPage ===
+            totalPages
+              ? 'disabled'
+              : ''
+          }
         >
           ›
         </button>
@@ -1666,21 +1993,30 @@
     }
 
 
-    function changePage(page) {
+    function changePage(
+      page
+    ) {
 
       const totalPages =
         Math.max(
+
           1,
+
           Math.ceil(
             filteredData.length /
             rowsPerPage
           )
+
         );
 
 
       if (
+
         page < 1 ||
-        page > totalPages
+
+        page >
+          totalPages
+
       ) {
 
         return;
@@ -1688,13 +2024,19 @@
       }
 
 
-      currentPage = page;
+      currentPage =
+        page;
+
 
       renderTable();
 
+
       window.scrollTo({
+
         top: 0,
+
         behavior: 'smooth'
+
       });
 
     }
@@ -1704,11 +2046,15 @@
        VIEW DETAILS
     ========================================= */
 
-    function viewDetails(id) {
+    function viewDetails(
+      id
+    ) {
 
       const item =
         allData.find(
-          x => Number(x.id) === Number(id)
+          x =>
+            Number(x.id) ===
+            Number(id)
         );
 
 
@@ -1721,41 +2067,76 @@
 
       const fields = [
 
-        ['Nama Pemohon / Penerima', item.nama],
+        [
+          'Nama Pemohon / Penerima',
+          item.nama
+        ],
 
-        ['No. Kad Pengenalan', item.no_ic],
+        [
+          'No. Kad Pengenalan',
+          item.no_ic
+        ],
 
-        ['Bangsa', item.bangsa],
+        [
+          'Bangsa',
+          item.bangsa
+        ],
 
-        ['Alamat Surat Menyurat', item.alamat],
+        [
+          'Alamat Surat Menyurat',
+          item.alamat
+        ],
 
-        ['Poskod', item.poskod],
+        [
+          'Poskod',
+          item.poskod
+        ],
 
-        ['No. Telefon', item.no_telefon],
+        [
+          'No. Telefon',
+          item.no_telefon
+        ],
 
-        ['DUN', item.dun],
+        [
+          'DUN',
+          item.dun
+        ],
 
-        ['Jenis Bantuan', item.jenis_bantuan]
+        [
+          'Jenis Bantuan',
+          item.jenis_bantuan
+        ]
 
       ];
 
 
-      let html = '';
+      let html =
+        '';
 
 
       fields.forEach(
-        ([label, value]) => {
+        (
+          [
+            label,
+            value
+          ]
+        ) => {
 
           html += `
 
             <div class="detail-row">
 
               <div class="detail-label">
-                ${escapeHtml(label)}
+                ${escapeHtml(
+                  label
+                )}
               </div>
 
               <div class="detail-value">
-                ${escapeHtml(value || '-')}
+                ${escapeHtml(
+                  value ||
+                  '-'
+                )}
               </div>
 
             </div>
@@ -1767,14 +2148,20 @@
 
 
       document
-        .getElementById('detailContent')
+        .getElementById(
+          'detailContent'
+        )
         .innerHTML =
         html;
 
 
       document
-        .getElementById('detailModal')
-        .classList.add('show');
+        .getElementById(
+          'detailModal'
+        )
+        .classList.add(
+          'show'
+        );
 
     }
 
@@ -1782,13 +2169,19 @@
     function closeModal() {
 
       document
-        .getElementById('detailModal')
-        .classList.remove('show');
+        .getElementById(
+          'detailModal'
+        )
+        .classList.remove(
+          'show'
+        );
 
     }
 
 
-    function closeModalOutside(event) {
+    function closeModalOutside(
+      event
+    ) {
 
       if (
         event.target.id ===
@@ -1808,11 +2201,16 @@
 
     async function logout() {
 
-      await supabaseClient.auth.signOut();
+      await supabaseClient.auth
+        .signOut();
 
-      allData = [];
 
-      filteredData = [];
+      allData =
+        [];
+
+
+      filteredData =
+        [];
 
     }
 
@@ -1821,14 +2219,36 @@
        SECURITY / HTML ESCAPE
     ========================================= */
 
-    function escapeHtml(value) {
+    function escapeHtml(
+      value
+    ) {
 
       return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+
+        .replace(
+          /&/g,
+          '&amp;'
+        )
+
+        .replace(
+          /</g,
+          '&lt;'
+        )
+
+        .replace(
+          />/g,
+          '&gt;'
+        )
+
+        .replace(
+          /"/g,
+          '&quot;'
+        )
+
+        .replace(
+          /'/g,
+          '&#039;'
+        );
 
     }
 
