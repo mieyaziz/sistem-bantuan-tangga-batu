@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Sistem Bantuan Tangga Batu</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f9;
+      color: #1f2937;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    /* =========================
+       LOGIN
+    ========================= */
+
+    #loginPage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 18px;
+      padding: 35px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+
+    .login-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 18px;
+      border-radius: 18px;
+      background: #1d4ed8;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .login-card h1 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+
+    .login-card .subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      outline: none;
+      transition: .2s;
+    }
+
+    .form-group input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .login-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .login-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .login-error {
+      display: none;
+      margin-top: 15px;
+      padding: 11px;
+      border-radius: 8px;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 13px;
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
+    #appPage {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: #0f172a;
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 3px 12px rgba(0,0,0,.15);
+    }
+
+    .brand h2 {
+      font-size: 20px;
+    }
+
+    .brand small {
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-email {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .logout-btn {
+      border: 1px solid #475569;
+      background: transparent;
+      color: white;
+      padding: 8px 13px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #1e293b;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    /* =========================
+       STAT CARDS
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+
+    .stat-title {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-number {
+      font-size: 27px;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    .search-card {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      margin-bottom: 20px;
+    }
+
+    .search-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .search-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .search-grid input,
+    .search-grid select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
+      background: white;
+      outline: none;
+    }
+
+    .search-grid input:focus,
+    .search-grid select:focus {
+      border-color: #2563eb;
+    }
+
+    .search-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    /* =========================
+       TABLE
+    ========================= */
+
+    .table-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .table-header h3 {
+      font-size: 17px;
+    }
+
+    .result-info {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 12px;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    .view-btn {
+      border: none;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 7px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .view-btn:hover {
+      background: #dbeafe;
+    }
+
+    /* =========================
+       PAGINATION
+    ========================= */
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 18px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      border: 1px solid #d1d5db;
+      background: white;
+      min-width: 36px;
+      height: 36px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+
+    .page-btn.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .page-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,.65);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 650px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.3);
+    }
+
+    .modal-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 18px;
+    }
+
+    .close-btn {
+      border: none;
+      background: #f1f5f9;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .detail-list {
+      padding: 20px;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .detail-label {
+      font-weight: 700;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .detail-value {
+      color: #111827;
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 1000px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .search-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .topbar {
+        padding: 13px 15px;
+      }
+
+      .brand h2 {
+        font-size: 16px;
+      }
+
+      .user-email {
+        display: none;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-number {
+        font-size: 22px;
+      }
+
+      .search-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .login-card {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       LOGIN PAGE
+  ========================= -->
+
+  <section id="loginPage">
+
+    <div class="login-card">
+
+      <div class="login-icon">
+        SB
+      </div>
+
+      <h1>Sistem Bantuan</h1>
+
+      <div class="subtitle">
+        Parlimen Tangga Batu
+      </div>
+
+      <form id="loginForm">
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Masukkan email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Kata Laluan</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Masukkan kata laluan"
+            required
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="login-btn"
+          id="loginBtn"
+        >
+          Log Masuk
+        </button>
+
+        <div
+          class="login-error"
+          id="loginError"
+        ></div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       APPLICATION
+  ========================= -->
+
+  <section id="appPage">
+
+    <header class="topbar">
+
+      <div class="brand">
+        <h2>Sistem Bantuan Tangga Batu</h2>
+        <small>Database Penerima Bantuan</small>
+      </div>
+
+      <div class="topbar-right">
+
+        <span
+          class="user-email"
+          id="userEmail"
+        ></span>
+
+        <button
+          class="logout-btn"
+          onclick="logout()"
+        >
+          Log Keluar
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <main class="container">
+
+      <!-- STATISTICS -->
+
+      <div class="stats">
+
+        <div class="stat-card">
+          <div class="stat-title">
+            Jumlah Penerima
+          </div>
+
+          <div
+            class="stat-number"
+            id="totalCount"
+          >
+            -
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div class="stat-title">
+            Jumlah DUN
+          </div>
+
+          <div
+            class="stat-number"
+            id="dunCount"
+          >
+            -
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div class="stat-title">
+            Jumlah Bangsa
+          </div>
+
+          <div
+            class="stat-number"
+            id="bangsaCount"
+          >
+            -
+          </div>
+        </div>
+
+
+        <div class="stat-card">
+          <div class="stat-title">
+            Jenis Bantuan
+          </div>
+
+          <div
+            class="stat-number"
+            id="bantuanCount"
+          >
+            -
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- SEARCH -->
+
+      <div class="search-card">
+
+        <div class="search-title">
+          🔎 Cari & Tapis Penerima
+        </div>
+
+        <div class="search-grid">
+
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Cari nama, No. IC, alamat atau telefon..."
+          >
+
+          <select id="dunFilter">
+            <option value="">Semua DUN</option>
+          </select>
+
+          <select id="bangsaFilter">
+            <option value="">Semua Bangsa</option>
+          </select>
+
+          <select id="bantuanFilter">
+            <option value="">Semua Jenis Bantuan</option>
+          </select>
+
+        </div>
+
+        <div class="search-actions">
+
+          <button
+            class="btn btn-primary"
+            onclick="applyFilters()"
+          >
+            Cari
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            onclick="resetFilters()"
+          >
+            Reset
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div class="table-card">
+
+        <div class="table-header">
+
+          <h3>
+            Senarai Penerima
+          </h3>
+
+          <div
+            class="result-info"
+            id="resultInfo"
+          >
+            Memuatkan...
+          </div>
+
+        </div>
+
+        <div id="tableContent">
+
+          <div class="loading">
+            Memuatkan data...
+          </div>
+
+        </div>
+
+        <div
+          class="pagination"
+          id="pagination"
+        ></div>
+
+      </div>
+
+    </main>
+
+  </section>
+
+
+  <!-- =========================
+       DETAIL MODAL
+  ========================= -->
+
+  <div
+    class="modal"
+    id="detailModal"
+    onclick="closeModalOutside(event)"
+  >
+
+    <div class="modal-box">
+
+      <div class="modal-header">
+
+        <h3>
+          Maklumat Penerima
+        </h3>
+
+        <button
+          class="close-btn"
+          onclick="closeModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div
+        class="detail-list"
+        id="detailContent"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /* =========================================
+       SUPABASE CONFIGURATION
+    ========================================= */
+
+    const SUPABASE_URL =
+      'https://xporgbqpfzjxxcmzjyof.supabase.co';
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      'PASTE_PUBLISHABLE_KEY_HERE';
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    /* =========================================
+       GLOBAL DATA
+    ========================================= */
+
+    let allData = [];
+    let filteredData = [];
+
+    let currentPage = 1;
+
+    const rowsPerPage = 20;
+
+
+    /* =========================================
+       INITIALIZE
+    ========================================= */
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      async () => {
+
+        const {
+          data: {
+            session
+          }
+        } = await supabaseClient.auth.getSession();
+
+        if (session) {
+
+          showApp(session);
+
+        } else {
+
+          showLogin();
+
+        }
+
+
+        supabaseClient.auth.onAuthStateChange(
+          (event, session) => {
+
+            if (session) {
+
+              showApp(session);
+
+            } else {
+
+              showLogin();
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =========================================
+       LOGIN
+    ========================================= */
+
+    document
+      .getElementById('loginForm')
+      .addEventListener(
+        'submit',
+        async (event) => {
+
+          event.preventDefault();
+
+          const email =
+            document
+              .getElementById('email')
+              .value
+              .trim();
+
+          const password =
+            document
+              .getElementById('password')
+              .value;
+
+          const loginBtn =
+            document.getElementById('loginBtn');
+
+          const errorBox =
+            document.getElementById('loginError');
+
+
+          errorBox.style.display = 'none';
+
+          loginBtn.disabled = true;
+
+          loginBtn.textContent =
+            'Sedang log masuk...';
+
+
+          const {
+            error
+          } =
+            await supabaseClient.auth.signInWithPassword({
+              email,
+              password
+            });
+
+
+          if (error) {
+
+            errorBox.textContent =
+              getLoginError(error);
+
+            errorBox.style.display =
+              'block';
+
+            loginBtn.disabled = false;
+
+            loginBtn.textContent =
+              'Log Masuk';
+
+            return;
+          }
+
+
+          loginBtn.disabled = false;
+
+          loginBtn.textContent =
+            'Log Masuk';
+
+        }
+      );
+
+
+    function getLoginError(error) {
+
+      if (
+        error.message
+          .toLowerCase()
+          .includes('invalid login credentials')
+      ) {
+
+        return 'Email atau kata laluan tidak betul.';
+
+      }
+
+      return error.message;
+
+    }
+
+
+    /* =========================================
+       SHOW LOGIN
+    ========================================= */
+
+    function showLogin() {
+
+      document
+        .getElementById('loginPage')
+        .style.display = 'flex';
+
+      document
+        .getElementById('appPage')
+        .style.display = 'none';
+
+    }
+
+
+    /* =========================================
+       SHOW APPLICATION
+    ========================================= */
+
+    async function showApp(session) {
+
+      document
+        .getElementById('loginPage')
+        .style.display = 'none';
+
+      document
+        .getElementById('appPage')
+        .style.display = 'block';
+
+
+      document
+        .getElementById('userEmail')
+        .textContent =
+        session.user.email || 'Pengguna';
+
+
+      await loadData();
+
+    }
+
+
+    /* =========================================
+       LOAD DATA
+    ========================================= */
+
+    async function loadData() {
+
+      document
+        .getElementById('tableContent')
+        .innerHTML =
+        '<div class="loading">Memuatkan data penerima...</div>';
+
+
+      const {
+        data,
+        error
+      } =
+      await supabaseClient
+        .from('penerima_bantuan')
+        .select(
+          'id,nama,no_ic,bangsa,alamat,poskod,no_telefon,dun,jenis_bantuan'
+        )
+        .order(
+          'id',
+          {
+            ascending: true
+          }
+        );
+
+
+      if (error) {
+
+        document
+          .getElementById('tableContent')
+          .innerHTML =
+          `<div class="loading">
+             Gagal memuatkan data.<br><br>
+             ${escapeHtml(error.message)}
+           </div>`;
+
+        return;
+
+      }
+
+
+      allData = data || [];
+
+      filteredData =
+        [...allData];
+
+
+      updateStatistics();
+
+      buildFilters();
+
+      renderTable();
+
+    }
+
+
+    /* =========================================
+       STATISTICS
+    ========================================= */
+
+    function updateStatistics() {
+
+      const duns =
+        new Set(
+          allData
+            .map(x => x.dun)
+            .filter(Boolean)
+        );
+
+      const bangsa =
+        new Set(
+          allData
+            .map(x => x.bangsa)
+            .filter(Boolean)
+        );
+
+      const bantuan =
+        new Set(
+          allData
+            .map(x => x.jenis_bantuan)
+            .filter(Boolean)
+        );
+
+
+      document
+        .getElementById('totalCount')
+        .textContent =
+        allData.length.toLocaleString('ms-MY');
+
+
+      document
+        .getElementById('dunCount')
+        .textContent =
+        duns.size;
+
+
+      document
+        .getElementById('bangsaCount')
+        .textContent =
+        bangsa.size;
+
+
+      document
+        .getElementById('bantuanCount')
+        .textContent =
+        bantuan.size;
+
+    }
+
+
+    /* =========================================
+       BUILD FILTER OPTIONS
+    ========================================= */
+
+    function buildFilters() {
+
+      fillSelect(
+        'dunFilter',
+        uniqueValues(
+          allData.map(x => x.dun)
+        ),
+        'Semua DUN'
+      );
+
+
+      fillSelect(
+        'bangsaFilter',
+        uniqueValues(
+          allData.map(x => x.bangsa)
+        ),
+        'Semua Bangsa'
+      );
+
+
+      fillSelect(
+        'bantuanFilter',
+        uniqueValues(
+          allData.map(x => x.jenis_bantuan)
+        ),
+        'Semua Jenis Bantuan'
+      );
+
+    }
+
+
+    function uniqueValues(values) {
+
+      return [
+        ...new Set(
+          values
+            .map(x => String(x || '').trim())
+            .filter(Boolean)
+        )
+      ].sort(
+        (a, b) =>
+          a.localeCompare(
+            b,
+            'ms'
+          )
+      );
+
+    }
+
+
+    function fillSelect(
+      id,
+      values,
+      firstOption
+    ) {
+
+      const select =
+        document.getElementById(id);
+
+
+      select.innerHTML =
+        `<option value="">
+          ${firstOption}
+        </option>`;
+
+
+      values.forEach(value => {
+
+        const option =
+          document.createElement('option');
+
+        option.value = value;
+
+        option.textContent = value;
+
+        select.appendChild(option);
+
+      });
+
+    }
+
+
+    /* =========================================
+       FILTER
+    ========================================= */
+
+    function applyFilters() {
+
+      const search =
+        document
+          .getElementById('searchInput')
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      const dun =
+        document
+          .getElementById('dunFilter')
+          .value;
+
+
+      const bangsa =
+        document
+          .getElementById('bangsaFilter')
+          .value;
+
+
+      const bantuan =
+        document
+          .getElementById('bantuanFilter')
+          .value;
+
+
+      filteredData =
+        allData.filter(item => {
+
+          const searchable = [
+
+            item.nama,
+
+            item.no_ic,
+
+            item.alamat,
+
+            item.no_telefon,
+
+            item.poskod,
+
+            item.dun,
+
+            item.jenis_bantuan,
+
+            item.bangsa
+
+          ]
+          .join(' ')
+          .toLowerCase();
+
+
+          const matchSearch =
+            !search ||
+            searchable.includes(search);
+
+
+          const matchDun =
+            !dun ||
+            item.dun === dun;
+
+
+          const matchBangsa =
+            !bangsa ||
+            item.bangsa === bangsa;
+
+
+          const matchBantuan =
+            !bantuan ||
+            item.jenis_bantuan === bantuan;
+
+
+          return (
+            matchSearch &&
+            matchDun &&
+            matchBangsa &&
+            matchBantuan
+          );
+
+        });
+
+
+      currentPage = 1;
+
+      renderTable();
+
+    }
+
+
+    function resetFilters() {
+
+      document
+        .getElementById('searchInput')
+        .value = '';
+
+
+      document
+        .getElementById('dunFilter')
+        .value = '';
+
+
+      document
+        .getElementById('bangsaFilter')
+        .value = '';
+
+
+      document
+        .getElementById('bantuanFilter')
+        .value = '';
+
+
+      filteredData =
+        [...allData];
+
+      currentPage = 1;
+
+      renderTable();
+
+    }
+
+
+    document
+      .getElementById('searchInput')
+      .addEventListener(
+        'keydown',
+        event => {
+
+          if (event.key === 'Enter') {
+
+            applyFilters();
+
+          }
+
+        }
+      );
+
+
+    /* =========================================
+       RENDER TABLE
+    ========================================= */
+
+    function renderTable() {
+
+      const total =
+        filteredData.length;
+
+
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            total / rowsPerPage
+          )
+        );
+
+
+      if (currentPage > totalPages) {
+
+        currentPage = totalPages;
+
+      }
+
+
+      const start =
+        (currentPage - 1) *
+        rowsPerPage;
+
+
+      const end =
+        start + rowsPerPage;
+
+
+      const rows =
+        filteredData.slice(
+          start,
+          end
+        );
+
+
+      document
+        .getElementById('resultInfo')
+        .textContent =
+        `${total.toLocaleString('ms-MY')} rekod ditemui`;
+
+
+      if (!rows.length) {
+
+        document
+          .getElementById('tableContent')
+          .innerHTML =
+          `<div class="loading">
+             Tiada rekod ditemui.
+           </div>`;
+
+        renderPagination(0);
+
+        return;
+
+      }
+
+
+      let html = `
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Bil.</th>
+
+                <th>Nama</th>
+
+                <th>No. IC</th>
+
+                <th>Bangsa</th>
+
+                <th>DUN</th>
+
+                <th>Jenis Bantuan</th>
+
+                <th>Tindakan</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+      `;
+
+
+      rows.forEach(
+        (item, index) => {
+
+          const number =
+            start + index + 1;
+
+
+          html += `
+
+            <tr>
+
+              <td>
+                ${number}
+              </td>
+
+              <td>
+                <strong>
+                  ${escapeHtml(item.nama || '-')}
+                </strong>
+              </td>
+
+              <td>
+                ${escapeHtml(item.no_ic || '-')}
+              </td>
+
+              <td>
+                ${escapeHtml(item.bangsa || '-')}
+              </td>
+
+              <td>
+                ${escapeHtml(item.dun || '-')}
+              </td>
+
+              <td>
+                ${escapeHtml(item.jenis_bantuan || '-')}
+              </td>
+
+              <td>
+
+                <button
+                  class="view-btn"
+                  onclick="viewDetails(${item.id})"
+                >
+                  Lihat
+                </button>
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+      );
+
+
+      html += `
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      `;
+
+
+      document
+        .getElementById('tableContent')
+        .innerHTML =
+        html;
+
+
+      renderPagination(
+        totalPages
+      );
+
+    }
+
+
+    /* =========================================
+       PAGINATION
+    ========================================= */
+
+    function renderPagination(
+      totalPages
+    ) {
+
+      const container =
+        document.getElementById(
+          'pagination'
+        );
+
+
+      if (!totalPages) {
+
+        container.innerHTML = '';
+
+        return;
+
+      }
+
+
+      let html = '';
+
+
+      html += `
+
+        <button
+          class="page-btn"
+          onclick="changePage(${currentPage - 1})"
+          ${currentPage === 1 ? 'disabled' : ''}
+        >
+          ‹
+        </button>
+
+      `;
+
+
+      const maxButtons = 7;
+
+      let startPage =
+        Math.max(
+          1,
+          currentPage - 3
+        );
+
+      let endPage =
+        Math.min(
+          totalPages,
+          startPage + maxButtons - 1
+        );
+
+
+      if (
+        endPage - startPage <
+        maxButtons - 1
+      ) {
+
+        startPage =
+          Math.max(
+            1,
+            endPage - maxButtons + 1
+          );
+
+      }
+
+
+      for (
+        let i = startPage;
+        i <= endPage;
+        i++
+      ) {
+
+        html += `
+
+          <button
+            class="page-btn ${i === currentPage ? 'active' : ''}"
+            onclick="changePage(${i})"
+          >
+            ${i}
+          </button>
+
+        `;
+
+      }
+
+
+      html += `
+
+        <button
+          class="page-btn"
+          onclick="changePage(${currentPage + 1})"
+          ${currentPage === totalPages ? 'disabled' : ''}
+        >
+          ›
+        </button>
+
+      `;
+
+
+      container.innerHTML =
+        html;
+
+    }
+
+
+    function changePage(page) {
+
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            filteredData.length /
+            rowsPerPage
+          )
+        );
+
+
+      if (
+        page < 1 ||
+        page > totalPages
+      ) {
+
+        return;
+
+      }
+
+
+      currentPage = page;
+
+      renderTable();
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+    }
+
+
+    /* =========================================
+       VIEW DETAILS
+    ========================================= */
+
+    function viewDetails(id) {
+
+      const item =
+        allData.find(
+          x => Number(x.id) === Number(id)
+        );
+
+
+      if (!item) {
+
+        return;
+
+      }
+
+
+      const fields = [
+
+        ['Nama Pemohon / Penerima', item.nama],
+
+        ['No. Kad Pengenalan', item.no_ic],
+
+        ['Bangsa', item.bangsa],
+
+        ['Alamat Surat Menyurat', item.alamat],
+
+        ['Poskod', item.poskod],
+
+        ['No. Telefon', item.no_telefon],
+
+        ['DUN', item.dun],
+
+        ['Jenis Bantuan', item.jenis_bantuan]
+
+      ];
+
+
+      let html = '';
+
+
+      fields.forEach(
+        ([label, value]) => {
+
+          html += `
+
+            <div class="detail-row">
+
+              <div class="detail-label">
+                ${escapeHtml(label)}
+              </div>
+
+              <div class="detail-value">
+                ${escapeHtml(value || '-')}
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      );
+
+
+      document
+        .getElementById('detailContent')
+        .innerHTML =
+        html;
+
+
+      document
+        .getElementById('detailModal')
+        .classList.add('show');
+
+    }
+
+
+    function closeModal() {
+
+      document
+        .getElementById('detailModal')
+        .classList.remove('show');
+
+    }
+
+
+    function closeModalOutside(event) {
+
+      if (
+        event.target.id ===
+        'detailModal'
+      ) {
+
+        closeModal();
+
+      }
+
+    }
+
+
+    /* =========================================
+       LOGOUT
+    ========================================= */
+
+    async function logout() {
+
+      await supabaseClient.auth.signOut();
+
+      allData = [];
+
+      filteredData = [];
+
+    }
+
+
+    /* =========================================
+       SECURITY / HTML ESCAPE
+    ========================================= */
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    }
+
+  </script>
+
+</body>
+</html>
