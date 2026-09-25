@@ -908,6 +908,15 @@
 
     const rowsPerPage = 20;
 
+/*
+  Kawalan supaya loadData() tidak berjalan
+  dua kali serentak akibat INITIAL_SESSION
+  + getSession().
+*/
+let loadingData = false;
+
+let loadedUserId = null;
+
 
     /* =========================================
        INITIALIZE
@@ -1099,28 +1108,78 @@
 
     async function showApp(session) {
 
-      document
-        .getElementById('loginPage')
-        .style.display =
-        'none';
+  document
+    .getElementById('loginPage')
+    .style.display =
+    'none';
+
+  document
+    .getElementById('appPage')
+    .style.display =
+    'block';
 
 
-      document
-        .getElementById('appPage')
-        .style.display =
-        'block';
+  document
+    .getElementById('userEmail')
+    .textContent =
+    session.user.email ||
+    'Pengguna';
 
 
-      document
-        .getElementById('userEmail')
-        .textContent =
-        session.user.email ||
-        'Pengguna';
+  const userId =
+    session.user.id;
 
 
-      await loadData();
+  /*
+    Kalau user yang sama sudah berjaya
+    load data, jangan load sekali lagi.
+  */
+  if (
+    loadedUserId === userId &&
+    allData.length > 0
+  ) {
+
+    return;
+
+  }
+
+
+  /*
+    Kalau loadData sedang berjalan,
+    jangan jalankan satu lagi.
+  */
+  if (loadingData) {
+
+    return;
+
+  }
+
+
+  loadingData = true;
+
+
+  try {
+
+    await loadData();
+
+    /*
+      Hanya tandakan user sebagai
+      sudah loaded selepas load berjaya.
+    */
+    if (allData.length > 0) {
+
+      loadedUserId =
+        userId;
 
     }
+
+  } finally {
+
+    loadingData = false;
+
+  }
+
+}
 
 
     /* =========================================
@@ -2201,18 +2260,23 @@
 
     async function logout() {
 
-      await supabaseClient.auth
-        .signOut();
+  await supabaseClient.auth
+    .signOut();
 
 
-      allData =
-        [];
+  allData = [];
+
+  filteredData = [];
 
 
-      filteredData =
-        [];
+  currentPage = 1;
 
-    }
+
+  loadedUserId = null;
+
+  loadingData = false;
+
+}
 
 
     /* =========================================
